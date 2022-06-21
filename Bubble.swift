@@ -26,7 +26,7 @@ public struct Bubble: View {
                 .font(.largeTitle)
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
-                .modifier(BubbleFrame(borderColor: .gray))
+                .modifier(BubbleFrame(borderColor: .gray, radius: 16))
             if (padding == .left || padding == .center) { Spacer() }
         }
     }
@@ -56,20 +56,21 @@ public struct BubbleFrame: ViewModifier {
     private let backgroundColor: Color
     private let borderColor: Color
     private let borderWidth: CGFloat
+    private let radius: CGFloat
     
     public init(
         backgroundColor: Color = .clear, 
         borderColor: Color = .clear, 
-        borderWidth: CGFloat = 1
+        borderWidth: CGFloat = 1,
+        radius: CGFloat = 20
     ) {
         self.backgroundColor = backgroundColor
         self.borderColor = borderColor
         self.borderWidth = borderWidth
+        self.radius = radius
     }
     
     public func body(content: Content) -> some View {
-        let radius: CGFloat = 16
-        
         content
             .background(
                 BubbleShape(radius: radius)
@@ -85,9 +86,9 @@ public struct BubbleFrame: ViewModifier {
     }
     
     private struct BubbleShape: Shape {
-        let radius: CGFloat
+        private let radius: CGFloat
         
-        init(radius: CGFloat = 20) {
+        init(radius: CGFloat) {
             self.radius = radius
         }
         
