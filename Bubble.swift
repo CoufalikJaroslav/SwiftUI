@@ -57,8 +57,6 @@ public struct BubbleFrame: ViewModifier {
     private let borderColor: Color
     private let borderWidth: CGFloat
     
-    @State private var size: CGSize = .init(width: 0, height: 0)
-    
     public init(
         backgroundColor: Color = .clear, 
         borderColor: Color = .clear, 
@@ -70,31 +68,24 @@ public struct BubbleFrame: ViewModifier {
     }
     
     public func body(content: Content) -> some View {
-        ZStack {
-            BubbleShape(size: size)
-                .fill(backgroundColor)
-                .overlay(
-                    BubbleShape(size: size)
-                        .stroke(
-                            borderColor, 
-                            style: .init(lineWidth: borderWidth, lineCap: .round)
-                        )
-                )
-                .frame(width: size.width, height: size.height, alignment: .center)
-            content
-                .readSize(onChange: { value in size = value })
-        }
+        content
+            .background(
+                BubbleShape()
+                    .fill(backgroundColor)
+                    .overlay(
+                        BubbleShape()
+                            .stroke(
+                                borderColor, 
+                                style: .init(lineWidth: borderWidth, lineCap: .round)
+                            )
+                    )
+            )
     }
     
     private struct BubbleShape: Shape {
-        private let customSize: CGSize 
-        
-        init(size: CGSize) {
-            self.customSize = size
-        }
-        
         func path(in rect: CGRect) -> Path {
-            let centerX = customSize.width / 2
+            let csize = rect.size
+            let centerX = csize.width / 2
             let arrowSize: CGFloat = 10
             
             let customShape = Path { p in
@@ -104,9 +95,9 @@ public struct BubbleFrame: ViewModifier {
                     .init(x: centerX - arrowSize, y: 0),
                     .init(x: centerX, y: -arrowSize),
                     .init(x: centerX + arrowSize, y: 0),
-                    .init(x: customSize.width, y: 0),
-                    .init(x: customSize.width, y: customSize.height),
-                    .init(x: 0, y: customSize.height),
+                    .init(x: csize.width, y: 0),
+                    .init(x: csize.width, y: csize.height),
+                    .init(x: 0, y: csize.height),
                     .init(x: 0, y: 0)
                 ])
             }
@@ -114,4 +105,3 @@ public struct BubbleFrame: ViewModifier {
         }
     }
 }
-
