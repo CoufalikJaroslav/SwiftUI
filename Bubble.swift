@@ -97,7 +97,7 @@ public struct BubbleFrame: ViewModifier {
             let centerX = customSize.width / 2
             let arrowSize: CGFloat = 10
             
-            var customShape = Path { p in
+            let customShape = Path { p in
                 p.move(to: CGPoint(x: 0, y: 0))
                 p.addLines([
                     .init(x: 0, y: 0),
@@ -114,3 +114,4 @@ public struct BubbleFrame: ViewModifier {
         }
     }
 }
+
