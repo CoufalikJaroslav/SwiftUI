@@ -26,7 +26,7 @@ public struct Bubble: View {
                 .font(.largeTitle)
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
-                .modifier(BubbleFrame(color: .green))
+                .modifier(BubbleFrame(borderColor: .gray))
             if (padding == .left || padding == .center) { Spacer() }
         }
     }
@@ -39,24 +39,47 @@ public enum TextPadding {
 }
 
 extension View {
-    func bubbleFrame(color: Color) -> some View {
-        modifier(BubbleFrame(color: color))
+    func bubbleFrame(
+        backgroundColor: Color = .clear, 
+        borderColor: Color = .clear, 
+        borderWidth: CGFloat = 1
+    ) -> some View {
+        modifier(BubbleFrame(
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: borderWidth
+        ))
     }
 }
 
 public struct BubbleFrame: ViewModifier {
-    private let color: Color
+    private let backgroundColor: Color
+    private let borderColor: Color
+    private let borderWidth: CGFloat
     
     @State private var size: CGSize = .init(width: 0, height: 0)
     
-    public init(color: Color) {
-        self.color = color
+    public init(
+        backgroundColor: Color = .clear, 
+        borderColor: Color = .clear, 
+        borderWidth: CGFloat = 1
+    ) {
+        self.backgroundColor = backgroundColor
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
     }
     
     public func body(content: Content) -> some View {
         ZStack {
             BubbleShape(size: size)
-                .stroke(color)
+                .fill(backgroundColor)
+                .overlay(
+                    BubbleShape(size: size)
+                        .stroke(
+                            borderColor, 
+                            style: .init(lineWidth: borderWidth, lineCap: .round)
+                        )
+                )
                 .frame(width: size.width, height: size.height, alignment: .center)
             content
                 .readSize(onChange: { value in size = value })
