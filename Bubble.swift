@@ -68,12 +68,14 @@ public struct BubbleFrame: ViewModifier {
     }
     
     public func body(content: Content) -> some View {
+        let radius: CGFloat = 16
+        
         content
             .background(
-                BubbleShape()
+                BubbleShape(radius: radius)
                     .fill(backgroundColor)
                     .overlay(
-                        BubbleShape()
+                        BubbleShape(radius: radius)
                             .stroke(
                                 borderColor, 
                                 style: .init(lineWidth: borderWidth, lineCap: .round)
@@ -83,23 +85,58 @@ public struct BubbleFrame: ViewModifier {
     }
     
     private struct BubbleShape: Shape {
+        let radius: CGFloat
+        
+        init(radius: CGFloat = 20) {
+            self.radius = radius
+        }
+        
         func path(in rect: CGRect) -> Path {
-            let csize = rect.size
-            let centerX = csize.width / 2
+            let centerX = rect.size.width / 2
             let arrowSize: CGFloat = 10
             
             let customShape = Path { p in
-                p.move(to: CGPoint(x: 0, y: 0))
-                p.addLines([
-                    .init(x: 0, y: 0),
-                    .init(x: centerX - arrowSize, y: 0),
-                    .init(x: centerX, y: -arrowSize),
-                    .init(x: centerX + arrowSize, y: 0),
-                    .init(x: csize.width, y: 0),
-                    .init(x: csize.width, y: csize.height),
-                    .init(x: 0, y: csize.height),
-                    .init(x: 0, y: 0)
-                ])
+                p.move(to: CGPoint(x: rect.minX + radius, y: rect.minY))
+                
+                p.addLine(to: .init(x: centerX - arrowSize, y: rect.minY))
+                p.addLine(to: .init(x: centerX, y: -arrowSize))
+                p.addLine(to: .init(x: centerX + arrowSize, y: rect.minY))
+                
+                p.addLine(to: .init(x: rect.maxX - radius, y: rect.minY))
+                
+                p.addRelativeArc(
+                    center: .init(x: rect.maxX - radius, y: rect.minY + radius), 
+                    radius: radius,
+                    startAngle: Angle.degrees(3*90), 
+                    delta: Angle.degrees(90)
+                )
+                
+                p.addLine(to: .init(x: rect.maxX, y: rect.maxY - radius))
+                
+                p.addRelativeArc(
+                    center: .init(x: rect.maxX - radius, y: rect.maxY - radius), 
+                    radius: radius,
+                    startAngle: Angle.degrees(0*90), 
+                    delta: Angle.degrees(90)
+                )
+                
+                p.addLine(to: .init(x: rect.minX + radius, y: rect.maxY))
+                
+                p.addRelativeArc(
+                    center: .init(x: rect.minX + radius, y: rect.maxY - radius), 
+                    radius: radius,
+                    startAngle: Angle.degrees(1*90), 
+                    delta: Angle.degrees(90)
+                )
+                
+                p.addLine(to: .init(x: rect.minX, y: rect.minY + radius))
+                
+                p.addRelativeArc(
+                    center: .init(x: rect.minX + radius, y: rect.minY + radius), 
+                    radius: radius,
+                    startAngle: Angle.degrees(2*90), 
+                    delta: Angle.degrees(90)
+                )
             }
             return customShape
         }
