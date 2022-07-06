@@ -44,15 +44,13 @@ import SwiftUI
 // }
 
 public extension View {
-    func onAnimationCompleted<Value: VectorArithmetic>(for value: Value, completion: @escaping () -> Void) -> ModifiedContent<Self, AnimationCompletionObserverModifier<Value>> {
+    func onAnimationCompleted<Value: VectorArithmetic>(for value: Value, completion: @escaping () -> Void) -> some View {
         return modifier(AnimationCompletionObserverModifier(observedValue: value, completion: completion))
     }
 }
 
-public struct AnimationCompletionObserverModifier<Value>: GeometryEffect where Value: VectorArithmetic {
-    public typealias AnimatableData = Value
-    
-    public var animatableData: Self.AnimatableData {
+public struct AnimationCompletionObserverModifier<Value: VectorArithmetic>: GeometryEffect {
+    public var animatableData: Value {
         didSet { notifyCompletionIfFinished() }
     }
     
@@ -76,3 +74,4 @@ public struct AnimationCompletionObserverModifier<Value>: GeometryEffect where V
         return ProjectionTransform()
     }
 }
+
