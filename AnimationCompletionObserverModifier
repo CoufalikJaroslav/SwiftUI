@@ -32,6 +32,6 @@ public struct AnimationCompletionObserverModifier<Value>: GeometryEffect where V
     }
     
     public func effectValue(size: CGSize) -> ProjectionTransform {
-        return .init()
+        return ProjectionTransform()
     }
 }
