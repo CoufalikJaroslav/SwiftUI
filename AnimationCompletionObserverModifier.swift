@@ -10,9 +10,7 @@ public struct AnimationCompletionObserverModifier<Value>: GeometryEffect where V
     public typealias AnimatableData = Value
     
     public var animatableData: Self.AnimatableData {
-        didSet {
-            notifyCompletionIfFinished()
-        }
+        didSet { notifyCompletionIfFinished() }
     }
     
     private var targetValue: Value
